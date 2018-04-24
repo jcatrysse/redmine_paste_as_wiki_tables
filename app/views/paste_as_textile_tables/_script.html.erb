@@ -63,13 +63,13 @@ $(function() {
 
     tableText += "|";
     for (var i = 0; i < firstLineCellsLength; i++) {
-      tableText += "_." + firstLineCells[i] + " |";
+      tableText += "_." + firstLineCells[i] + "|";
     }
     tableText += "\n";
 
     for (var i = 1; i < linesLength; i++) {
       var cells = lines[i].split('\t');
-      tableText += "| " + cells.join(" | ") + " |\n";
+      tableText += "|" + cells.join("|") + " |\n";
     }
     return tableText;
   }
