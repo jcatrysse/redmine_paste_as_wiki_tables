@@ -1,8 +1,8 @@
-Redmine Paste as Markdown Tables
+Redmine Paste as Textile Tables
 ===================================
 
 This plugin catch paste events, then paste Excel format text(tab separated text with carriage return)
-on Clipboard as Markdown-style table format.
+on Clipboard as Textile-style table format.
 
 Author
 ------------------------------
@@ -13,7 +13,7 @@ Install
 Type below commands:
 
     $ cd $RAILS_ROOT/plugins
-    $ git clone https://github.com/suer/redmine_paste_as_markdown_tables.git
+    $ git clone https://github.com/suer/redmine_paste_as_textile_tables.git
 
 Then, restart your redmine.
 
