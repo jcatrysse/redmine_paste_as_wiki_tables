@@ -4,7 +4,7 @@ $(function() {
     var $this = $(this);
     var text;
     if(navigator.userAgent.match(/MSIE/)) {
-      text = window.clipboardData.getData('text');
+      text = clipboardData.getData('text');
     } else {
       text = e.originalEvent.clipboardData.getData('text');
     }
