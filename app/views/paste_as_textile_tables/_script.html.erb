@@ -1,12 +1,13 @@
 <script type="text/javascript">
 $(function() {
   $(document).on('paste', '.wiki-edit', function (e) {
-    if(navigator.userAgent.match(/MSIE/)) {
-      return true;
-    }
-
     var $this = $(this);
-    var text = e.originalEvent.clipboardData.getData('text');
+    var text;
+    if(navigator.userAgent.match(/MSIE/)) {
+      text = window.clipboardData.getData('text');
+    } else {
+      text = e.originalEvent.clipboardData.getData('text');
+    }
     if (isTable(text)) {
       insert($this, toTable(text));
       return false;
