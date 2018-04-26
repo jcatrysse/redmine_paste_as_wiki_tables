@@ -3,7 +3,7 @@ $(function() {
   $(document).on('paste', '.wiki-edit', function (e) {
     var $this = $(this);
     var text;
-    if(navigator.userAgent.match(/MSIE/)) {
+    if(navigator.userAgent.match(/MSIE/)||navigator.userAgent.match(/Trident/)) {
       text = clipboardData.getData('text');
     } else {
       text = e.originalEvent.clipboardData.getData('text');
