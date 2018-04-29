@@ -63,7 +63,7 @@ $(function() {
     var firstLineCells = lines[0].split('\t');
     var firstLineCellsLength = firstLineCells.length;
 
-    if (textFormatting = "markdown") {
+    if (textFormatting == "markdown") {
       tableText += "|";
       for (var i = 0; i < firstLineCellsLength; i++) {
         tableText += " " + firstLineCells[i] + " |";
@@ -79,7 +79,7 @@ $(function() {
         tableText += "| " + cells.join(" | ") + " |\n";
       }
       return tableText;
-    } else if (textFormatting = "textile") {
+    } else if (textFormatting == "textile") {
       tableText += "|";
       for (var i = 0; i < firstLineCellsLength; i++) {
         tableText += "_." + firstLineCells[i] + "|";
