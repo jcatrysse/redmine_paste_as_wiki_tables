@@ -50,6 +50,7 @@ $(function() {
 
   function toTable(text) {
     var tableText = "";
+    var textFormatting = <%= raw ('"' + Setting.text_formatting + '"') %>;
     var lines = $.trim(text).split(/\r\n/);
     var linesLength = lines.length;
     if (linesLength < 2) {
@@ -62,17 +63,36 @@ $(function() {
     var firstLineCells = lines[0].split('\t');
     var firstLineCellsLength = firstLineCells.length;
 
-    tableText += "|";
-    for (var i = 0; i < firstLineCellsLength; i++) {
-      tableText += "_." + firstLineCells[i] + "|";
+    if (textFormatting = "markdown") {
+      tableText += "|";
+      for (var i = 0; i < firstLineCellsLength; i++) {
+        tableText += " " + firstLineCells[i] + " |";
+      }
+      tableText += "\n";
+      tableText += "|";
+      for (var i = 0; i < firstLineCellsLength; i++) {
+        tableText += "---|";
+      }
+      tableText += "\n";
+      for (var i = 1; i < linesLength; i++) {
+        var cells = lines[i].split('\t');
+        tableText += "| " + cells.join(" | ") + " |\n";
+      }
+      return tableText;
+    } else if (textFormatting = "textile") {
+      tableText += "|";
+      for (var i = 0; i < firstLineCellsLength; i++) {
+        tableText += "_." + firstLineCells[i] + "|";
+      }
+      tableText += "\n";
+      for (var i = 1; i < linesLength; i++) {
+        var cells = lines[i].split('\t');
+        tableText += "|" + cells.join("|") + "|\n";
+      }
+      return tableText;
+    } else {
+      return text;
     }
-    tableText += "\n";
-
-    for (var i = 1; i < linesLength; i++) {
-      var cells = lines[i].split('\t');
-      tableText += "|" + cells.join("|") + "|\n";
-    }
-    return tableText;
   }
 });
 </script>

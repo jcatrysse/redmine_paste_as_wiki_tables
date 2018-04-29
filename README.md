@@ -1,8 +1,8 @@
-Redmine Paste as Textile Tables
+Redmine Paste as Wiki Tables
 ===================================
 
 This plugin catch paste events, then paste Excel format text (or tab separated text with carriage return)
-on Clipboard as Textile-style table format.
+on Clipboard as Wiki-style table format.
 
 Author
 ------------------------------
@@ -13,7 +13,7 @@ Install
 Type below commands:
 
     $ cd $RAILS_ROOT/plugins
-    $ git clone https://github.com/knt419/redmine_paste_as_textile_tables.git
+    $ git clone https://github.com/knt419/redmine_paste_as_wiki_tables.git
 
 Then, restart your redmine.
 
