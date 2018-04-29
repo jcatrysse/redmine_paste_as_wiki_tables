@@ -1,19 +1,19 @@
 Redmine Paste as Textile Tables
 ===================================
 
-This plugin catch paste events, then paste Excel format text(tab separated text with carriage return)
+This plugin catch paste events, then paste Excel format text (or tab separated text with carriage return)
 on Clipboard as Textile-style table format.
 
 Author
 ------------------------------
-* @suer
+* knt419
 
 Install
 ------------------------------
 Type below commands:
 
     $ cd $RAILS_ROOT/plugins
-    $ git clone https://github.com/suer/redmine_paste_as_textile_tables.git
+    $ git clone https://github.com/knt419/redmine_paste_as_textile_tables.git
 
 Then, restart your redmine.
 
