@@ -1,4 +1,4 @@
-require_dependency 'paste_as_wiki_tables_listener'
+require File.expand_path('../lib/paste_as_wiki_tables_listener', __FILE__)
 
 Redmine::Plugin.register :redmine_paste_as_wiki_tables do
   name 'Redmine Paste As Wiki Tables plugin'

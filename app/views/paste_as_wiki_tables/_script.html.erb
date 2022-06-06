@@ -63,7 +63,7 @@ $(function() {
     var firstLineCells = lines[0].split('\t');
     var firstLineCellsLength = firstLineCells.length;
 
-    if (textFormatting == "markdown") {
+    if (textFormatting == "markdown" || textFormatting == "common_mark") {
       tableText += "|";
       for (var i = 0; i < firstLineCellsLength; i++) {
         tableText += " " + firstLineCells[i] + " |";
