@@ -1,18 +1,51 @@
 <script type="text/javascript">
 $(function() {
   $(document).on('paste', '.wiki-edit', function (e) {
-    var $this = $(this);
-    var text;
-    if(navigator.userAgent.match(/MSIE/)||navigator.userAgent.match(/Trident/)) {
-      text = clipboardData.getData('text');
-    } else {
-      text = e.originalEvent.clipboardData.getData('text');
+    const $this = $(this);
+    const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
+    if (!clipboardData) { return; }
+
+    if (clipboardData.types.some(function(t){ return /^text\/plain$/.test(t); })) {
+      const text = clipboardData.getData('text');
+
+      if (isTable(text)) {
+        insert($this, toTable(text));
+        return false;
+      }
+      return true;
+    } else if ($this.is('textarea[id^="journal_"]')) {
+      const items = clipboardData.items;
+      let file_upload = false
+      $.event.addProp('dataTransfer');
+      for (let i = 0 ; i < items.length ; i++) {
+        const item = items[i];
+        if (item.type.indexOf("image") !== -1) {
+          const blob = item.getAsFile();
+          const date = new Date();
+          const filename = 'clipboard-'
+            + date.getFullYear()
+            + ('0' + (date.getMonth() + 1)).slice(-2)
+            + ('0' + date.getDate()).slice(-2)
+            + ('0' + date.getHours()).slice(-2)
+            + ('0' + date.getMinutes()).slice(-2)
+            + '-' + randomKey(5).toLocaleLowerCase()
+            + '.' + blob.name.split('.').pop();
+          const file = new Blob([blob], {type: blob.type});
+          file.name = filename;
+          const inputEl = $('input:file.filedrop').first();
+          handleFileDropEvent.target = e.target;
+          addFile(inputEl, file, true);
+          file_upload = true
+        }
+      }
+      if (file_upload === true) {
+        const notesForm = $this.closest('form')
+        const mainForm = document.getElementById('issue-form');
+        notesForm.on('submit', function(event) {
+          mainForm.submit();
+        });
+      }
     }
-    if (isTable(text)) {
-      insert($this, toTable(text));
-      return false;
-    }
-    return true;
   });
 
   function insert(textarea, text) {

@@ -4,9 +4,13 @@ Redmine Paste as Wiki Tables
 This plugin catch paste events, then paste Excel format text (or tab separated text with carriage return)
 on Clipboard as Wiki-style table format.
 
+From version 0.0.2
+* Paste clipboard images on note edit
+
 Author
 ------------------------------
 * knt419
+* Jan Catrysse
 
 Install
 ------------------------------
