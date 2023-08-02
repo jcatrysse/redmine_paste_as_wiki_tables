@@ -8,6 +8,6 @@ Redmine::Plugin.register :redmine_paste_as_wiki_tables do
 
   require File.dirname(__FILE__) + '/lib/paste_as_wiki_tables_listener'
 
-  settings default: {'enable_table_paste' => 'true', 'enable_image_paste' => 'true', 'enable_auto_submit' => 'true'},
+  settings default: {'enable_table_paste' => true, 'enable_image_paste' => true, 'enable_auto_submit' => true},
            partial: 'settings/paste_as_wiki_tables_settings'
 end
