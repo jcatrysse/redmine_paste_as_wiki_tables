@@ -1,0 +1,11 @@
+ro:
+  messages:
+    save_issue: "Nu uitați să salvați tichete dvs.! Acest lucru asigură că orice atașamente pe care le-ați adăugat sunt salvate corect."
+  labels:
+    enable_table_paste: "Activați Lipirea Tabelelor"
+    enable_image_paste: "Activați Lipirea Imaginilor"
+    enable_auto_submit: "Activați Trimiterea Automată a tichete Principale"
+  descriptions:
+    enable_table_paste: "Când această opțiune este activată, utilizatorii vor putea lipi tabele direct în câmpul notei. Datele din tabel vor fi formatate corect și adăugate la notă."
+    enable_image_paste: "Când această opțiune este activată, utilizatorii vor putea lipi imagini direct în câmpul notei în timp ce editează notele existente. Datele imaginii vor fi încărcate ca o atașare la tichete în cauză."
+    enable_auto_submit: "Când această opțiune este activată, formularul tichete în cauză va fi trimis automat după ce o notă cu atașamente este salvată. Acest lucru asigură că toate atașamentele sunt salvate corect în tichete. Dacă trimiterea automată nu este activată, se va afișa o alertă pentru a reaminti utilizatorului să salveze manual tichete."

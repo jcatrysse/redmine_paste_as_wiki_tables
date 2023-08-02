@@ -1,0 +1,11 @@
+de:
+  messages:
+    save_issue: "Denken Sie daran, Ihr Ticket zu speichern! Dies stellt sicher, dass alle hinzugefügten Anhänge korrekt gespeichert werden."
+  labels:
+    enable_table_paste: "Einfügen von Tabellen aktivieren"
+    enable_image_paste: "Einfügen von Bildern aktivieren"
+    enable_auto_submit: "Automatisches Absenden des Hauptticket aktivieren"
+  descriptions:
+    enable_table_paste: "Wenn diese Option aktiviert ist, können Benutzer Tabellen direkt in das Notizfeld einfügen. Die Tabellendaten werden korrekt formatiert und zur Notiz hinzugefügt."
+    enable_image_paste: "Wenn diese Option aktiviert ist, können Benutzer Bilder direkt in das Notizfeld einfügen, während sie vorhandene Notizen bearbeiten. Die Bilddaten werden als Anhang zum betreffenden Ticket hochgeladen."
+    enable_auto_submit: "Wenn diese Option aktiviert ist, wird das betreffende Ticket automatisch abgesendet, nachdem eine Notiz mit Anhängen gespeichert wurde. Dies stellt sicher, dass alle Anhänge korrekt zum Ticket gespeichert werden. Wenn das automatische Absenden nicht aktiviert ist, wird ein Alarm angezeigt, der den Benutzer daran erinnert, das Ticket manuell zu speichern."

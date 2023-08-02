@@ -1,3 +1,11 @@
-# English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  messages:
+    save_issue: "Remember to save your issue! This ensures that any attachments you've added are properly saved too."
+  labels:
+    enable_table_paste: "Enable Table Paste"
+    enable_image_paste: "Enable Image Paste"
+    enable_auto_submit: "Enable Automatic Submit of the main issue"
+  descriptions:
+    enable_table_paste: "When this option is enabled, users will be able to paste tables directly into the note field. The table data will be formatted correctly and added to the note."
+    enable_image_paste: "When this option is enabled, users will be able to paste images directly into the note field while editing existing notes. The image data will be uploaded as an attachment to the issue concerned."
+    enable_auto_submit: "When this option is enabled, the concerned issue form will be automatically submitted after a note with attachments is saved. This ensures that all attachments are correctly saved to the issue. If auto submit is not enabled, an alert will be shown to remind the user to manually save the issue."

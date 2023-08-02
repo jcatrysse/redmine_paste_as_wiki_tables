@@ -1,80 +1,91 @@
 <script type="text/javascript">
-$(function() {
-  $(document).on('paste', '.wiki-edit', function (e) {
-    const $this = $(this);
-    const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
-    if (!clipboardData) { return; }
+  $(function() {
+    $(document).on('paste', '.wiki-edit', function (e) {
+      const enableTablePaste = '<%= Setting.plugin_redmine_paste_as_wiki_tables['enable_table_paste'] %>' === '1';
+      const enableImagePaste = '<%= Setting.plugin_redmine_paste_as_wiki_tables['enable_image_paste'] %>' === '1';
+      const enable_auto_submit = '<%= Setting.plugin_redmine_paste_as_wiki_tables['enable_auto_submit'] %>' === '1';
+      const $this = $(this);
+      const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
+      if (!clipboardData) { return; }
 
-    if (clipboardData.types.some(function(t){ return /^text\/plain$/.test(t); })) {
-      const text = clipboardData.getData('text');
+      if (clipboardData.types.some(function(t){ return /^text\/plain$/.test(t); })) {
+        if (enableTablePaste) {
+          const text = clipboardData.getData('text');
 
-      if (isTable(text)) {
-        insert($this, toTable(text));
-        return false;
-      }
-      return true;
-    } else if ($this.is('textarea[id^="journal_"]')) {
-      const items = clipboardData.items;
-      let file_upload = false
-      $.event.addProp('dataTransfer');
-      for (let i = 0 ; i < items.length ; i++) {
-        const item = items[i];
-        if (item.type.indexOf("image") !== -1) {
-          const blob = item.getAsFile();
-          const date = new Date();
-          const filename = 'clipboard-'
-            + date.getFullYear()
-            + ('0' + (date.getMonth() + 1)).slice(-2)
-            + ('0' + date.getDate()).slice(-2)
-            + ('0' + date.getHours()).slice(-2)
-            + ('0' + date.getMinutes()).slice(-2)
-            + '-' + randomKey(5).toLocaleLowerCase()
-            + '.' + blob.name.split('.').pop();
-          const file = new Blob([blob], {type: blob.type});
-          file.name = filename;
-          const inputEl = $('input:file.filedrop').first();
-          handleFileDropEvent.target = e.target;
-          addFile(inputEl, file, true);
-          file_upload = true
+          if (isTable(text)) {
+            insert($this, toTable(text));
+            return false;
+          }
+        }
+      } else if (enableImagePaste) {
+        if (window.File && window.FileList && window.ProgressEvent && window.FormData) {
+          if ($this.is('textarea[id^="journal_"]')) {
+            const items = clipboardData.items;
+            let file_upload = false;
+
+            $.event.addProp('dataTransfer');
+            for (let i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item.type.indexOf("image") !== -1) {
+                const blob = item.getAsFile();
+                const date = new Date();
+                const filename = 'clipboard-'
+                  + date.getFullYear()
+                  + ('0' + (date.getMonth() + 1)).slice(-2)
+                  + ('0' + date.getDate()).slice(-2)
+                  + ('0' + date.getHours()).slice(-2)
+                  + ('0' + date.getMinutes()).slice(-2)
+                  + '-' + randomKey(5).toLocaleLowerCase()
+                  + '.' + blob.name.split('.').pop();
+                const file = new Blob([blob], {type: blob.type});
+                file.name = filename;
+                const inputEl = $('input:file.filedrop').first();
+                handleFileDropEvent.target = e.target;
+                addFile(inputEl, file, true);
+                file_upload = true;
+              }
+            }
+            if (file_upload === true) {
+              const notesForm = $this.closest('form')
+              const mainForm = document.getElementById('issue-form');
+              $('#update').show();
+              notesForm.on('submit', function () {
+                if (enable_auto_submit) {
+                  notesForm.remove();
+                  mainForm.submit();
+                } else {
+                  alert("<%= t('messages.save_issue') %>")
+                }
+              });
+            }
+          }
         }
       }
-      if (file_upload === true) {
-        const notesForm = $this.closest('form')
-        const mainForm = document.getElementById('issue-form');
-        notesForm.on('submit', function(event) {
-          mainForm.submit();
-        });
-      }
-    }
-  });
+    });
 
   function insert(textarea, text) {
-    var $textarea = $(textarea).focus();
-    var currentText = $textarea.val();
-    var startPoint = $textarea.get(0).selectionStart;
-    var endPoint = startPoint + text.length;
-    $textarea.val(currentText.substr(0, startPoint) + text + currentText.substr(endPoint));
+    const $textarea = $(textarea).focus();
+    const currentText = $textarea.val();
+    const startPoint = $textarea.get(0).selectionStart;
+    const endPoint = startPoint + text.length;
+    $textarea.val(currentText.substring(0, startPoint) + text + currentText.substring(endPoint));
     $textarea.get(0).setSelectionRange(endPoint, endPoint);
   }
 
   function isTable(text) {
-    var lines = $.trim(text).split(/\r\n/);
-    var length = lines.length;
-    if (length < 2) {
-      lines = $.trim(text).split(/\r|\n/);
-      length = lines.length;
-    }
+    const lines = $.trim(text).split(/(\r\n|\r|\n)/);
+    const length = lines.length;
 
     if (length < 2) {
       return false;
     }
 
-    var cellCount = 0;
-    for (var i = 0; i < length; i++) {
-      var cells = lines[i].split('\t');
-      if (cellCount == 0) {
+    let cellCount = 0;
+    for (let i = 0; i < length; i++) {
+      const cells = lines[i].split('\t');
+      if (cellCount === 0) {
         cellCount = cells.length;
-      } else if (cellCount != cells.length) {
+      } else if (cellCount !== cells.length) {
         return false
       }
     }
@@ -82,44 +93,43 @@ $(function() {
   }
 
   function toTable(text) {
-    var tableText = "";
-    var textFormatting = <%= raw ('"' + Setting.text_formatting + '"') %>;
-    var lines = $.trim(text).split(/\r\n/);
-    var linesLength = lines.length;
-    if (linesLength < 2) {
-      lines = $.trim(text).split(/\r|\n/);
-      linesLength = lines.length;
-    }
-    if (linesLength == 0) {
+    let cells;
+    let i;
+    let tableText = "";
+    const textFormatting = <%= raw('"' + Setting.text_formatting + '"') %>;
+    const lines = $.trim(text).split(/(\r\n|\r|\n)/);
+    const linesLength = lines.length;
+
+    if (linesLength === 0) {
       return text;
     }
-    var firstLineCells = lines[0].split('\t');
-    var firstLineCellsLength = firstLineCells.length;
+    const firstLineCells = lines[0].split('\t');
+    const firstLineCellsLength = firstLineCells.length;
 
-    if (textFormatting == "markdown" || textFormatting == "common_mark") {
+    if (textFormatting === "markdown" || textFormatting === "common_mark") {
       tableText += "|";
-      for (var i = 0; i < firstLineCellsLength; i++) {
+      for (i = 0; i < firstLineCellsLength; i++) {
         tableText += " " + firstLineCells[i] + " |";
       }
       tableText += "\n";
       tableText += "|";
-      for (var i = 0; i < firstLineCellsLength; i++) {
+      for (i = 0; i < firstLineCellsLength; i++) {
         tableText += "---|";
       }
       tableText += "\n";
-      for (var i = 1; i < linesLength; i++) {
-        var cells = lines[i].split('\t');
+      for (i = 1; i < linesLength; i++) {
+        cells = lines[i].split('\t');
         tableText += "| " + cells.join(" | ") + " |\n";
       }
       return tableText;
-    } else if (textFormatting == "textile") {
+    } else if (textFormatting === "textile") {
       tableText += "|";
-      for (var i = 0; i < firstLineCellsLength; i++) {
+      for (i = 0; i < firstLineCellsLength; i++) {
         tableText += "_." + firstLineCells[i] + "|";
       }
       tableText += "\n";
-      for (var i = 1; i < linesLength; i++) {
-        var cells = lines[i].split('\t');
+      for (i = 1; i < linesLength; i++) {
+        cells = lines[i].split('\t');
         tableText += "|" + cells.join("|") + "|\n";
       }
       return tableText;

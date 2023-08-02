@@ -1,0 +1,21 @@
+<p>
+  <%= label_tag 'enable_table_paste', t('labels.enable_table_paste') %>
+  <%= check_box_tag 'settings[enable_table_paste]', 1,
+                    @settings['enable_table_paste'] %>
+  <br>
+  <small><%= t('descriptions.enable_table_paste') %></small>
+</p>
+<p>
+  <%= label_tag 'enable_image_paste', t('labels.enable_image_paste') %>
+  <%= check_box_tag 'settings[enable_image_paste]', 1,
+                    @settings['enable_image_paste'] %>
+  <br>
+  <small><%= t('descriptions.enable_image_paste') %></small>
+</p>
+<p>
+  <%= label_tag 'enable_auto_submit', t('labels.enable_auto_submit') %>
+  <%= check_box_tag 'settings[enable_auto_submit]', 1,
+                    @settings['enable_auto_submit'] %>
+  <br>
+  <small><%= t('descriptions.enable_auto_submit') %></small>
+</p>

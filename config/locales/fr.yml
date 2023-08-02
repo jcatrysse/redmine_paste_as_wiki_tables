@@ -1,0 +1,11 @@
+fr:
+  messages:
+    save_issue: "N'oubliez pas de sauvegarder votre demande ! Cela garantit que toutes les pièces jointes que vous avez ajoutées sont correctement sauvegardées."
+  labels:
+    enable_table_paste: "Activer le collage de tableau"
+    enable_image_paste: "Activer le collage d'image"
+    enable_auto_submit: "Activer la soumission automatique du demande principal"
+  descriptions:
+    enable_table_paste: "Lorsque cette option est activée, les utilisateurs peuvent coller directement des tableaux dans le champ de note. Les données du tableau seront correctement formatées et ajoutées à la note."
+    enable_image_paste: "Lorsque cette option est activée, les utilisateurs peuvent coller directement des images dans le champ de note lors de l'édition des notes existantes. Les données de l'image seront téléchargées en tant que pièce jointe au demande concerné."
+    enable_auto_submit: "Lorsque cette option est activée, le formulaire du demande concerné est automatiquement soumis après avoir enregistré une note avec des pièces jointes. Cela garantit que toutes les pièces jointes sont correctement enregistrées sur le demande. Si la soumission automatique n'est pas activée, une alerte sera affichée pour rappeler à l'utilisateur de sauvegarder manuellement le problème."

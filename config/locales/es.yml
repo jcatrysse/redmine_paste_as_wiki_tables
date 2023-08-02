@@ -1,0 +1,11 @@
+es:
+  messages:
+    save_issue: "¡Recuerda guardar tu petición! Esto asegura que todos los archivos adjuntos que hayas añadido se guarden correctamente."
+  labels:
+    enable_table_paste: "Habilitar Pegado de Tablas"
+    enable_image_paste: "Habilitar Pegado de Imágenes"
+    enable_auto_submit: "Habilitar el envío automático del petición principal"
+  descriptions:
+    enable_table_paste: "Cuando esta opción está habilitada, los usuarios podrán pegar tablas directamente en el campo de notas. Los datos de la tabla se formatearán correctamente y se agregarán a la nota."
+    enable_image_paste: "Cuando esta opción está habilitada, los usuarios podrán pegar imágenes directamente en el campo de notas mientras editan las notas existentes. Los datos de la imagen se subirán como un archivo adjunto al petición correspondiente."
+    enable_auto_submit: "Cuando esta opción está habilitada, el formulario del petición correspondiente se enviará automáticamente después de guardar una nota con archivos adjuntos. Esto asegura que todos los archivos adjuntos se guarden correctamente en el petición. Si el envío automático no está habilitado, se mostrará una alerta para recordar al usuario que guarde el petición manualmente."

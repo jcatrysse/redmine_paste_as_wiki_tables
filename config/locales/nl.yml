@@ -1,0 +1,11 @@
+nl:
+  messages:
+    save_issue: "Vergeet niet om uw issue op te slaan! Hierdoor worden eventueel toegevoegde bijlagen ook correct opgeslagen."
+  labels:
+    enable_table_paste: "Tabel plakken inschakelen"
+    enable_image_paste: "Afbeelding plakken inschakelen"
+    enable_auto_submit: "Automatisch opslaan van het issue inschakelen"
+  descriptions:
+    enable_table_paste: "Wanneer deze optie is ingeschakeld, kunnen gebruikers tabellen rechtstreeks in het notitieveld plakken. De tabelgegevens worden correct geformatteerd en aan de notitie toegevoegd."
+    enable_image_paste: "Wanneer deze optie is ingeschakeld, kunnen gebruikers afbeeldingen rechtstreeks in het notitieveld plakken terwijl ze bestaande notities bewerken. De afbeeldingsgegevens worden als bijlage geüpload naar het desbetreffende issue."
+    enable_auto_submit: "Wanneer deze optie is ingeschakeld, wordt het formulier van het desbetreffende issue automatisch ingediend nadat een notitie met bijlagen is opgeslagen. Dit zorgt ervoor dat alle bijlagen correct worden opgeslagen in het issue. Als automatisch indienen niet is ingeschakeld, wordt er een waarschuwing weergegeven om de gebruiker eraan te herinneren het issue handmatig op te slaan."
