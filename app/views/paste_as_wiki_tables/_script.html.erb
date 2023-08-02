@@ -73,8 +73,8 @@
   }
 
   function isTable(text) {
-    const lines = $.trim(text).split(/(\r\n|\r|\n)/);
-    const length = lines.length;
+    let lines = $.trim(text).split(/\r?\n/);
+    let length = lines.length;
 
     if (length < 2) {
       return false;
@@ -97,8 +97,8 @@
     let i;
     let tableText = "";
     const textFormatting = <%= raw('"' + Setting.text_formatting + '"') %>;
-    const lines = $.trim(text).split(/(\r\n|\r|\n)/);
-    const linesLength = lines.length;
+    let lines = $.trim(text).split(/\r?\n/);
+    let linesLength = lines.length;
 
     if (linesLength === 0) {
       return text;
