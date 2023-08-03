@@ -1,6 +1,7 @@
 en:
   messages:
     save_issue: "Remember to save your issue! This ensures that any attachments you've added are properly saved too."
+    save_notes_first: "Are you sure you want to submit the issue? Your note has not been saved yet! Press 'Cancel' to go back and save your note."
   labels:
     enable_table_paste: "Enable Table Paste"
     enable_image_paste: "Enable Image Paste"

@@ -1,6 +1,7 @@
 nl:
   messages:
     save_issue: "Vergeet niet om uw issue op te slaan! Hierdoor worden eventueel toegevoegde bijlagen ook correct opgeslagen."
+    save_notes_first: "Weet je zeker dat je het ticket wilt indienen? Je notitie is nog niet opgeslagen! Druk op 'Annuleren' om terug te gaan en je notitie op te slaan."
   labels:
     enable_table_paste: "Tabel plakken inschakelen"
     enable_image_paste: "Afbeelding plakken inschakelen"

@@ -1,6 +1,7 @@
 de:
   messages:
     save_issue: "Denken Sie daran, Ihr Ticket zu speichern! Dies stellt sicher, dass alle hinzugefügten Anhänge korrekt gespeichert werden."
+    save_notes_first: "Sind Sie sicher, dass Sie das Ticket einreichen möchten? Ihre Notiz wurde noch nicht gespeichert! Drücken Sie 'Abbrechen', um zurückzugehen und Ihre Notiz zu speichern."
   labels:
     enable_table_paste: "Einfügen von Tabellen aktivieren"
     enable_image_paste: "Einfügen von Bildern aktivieren"

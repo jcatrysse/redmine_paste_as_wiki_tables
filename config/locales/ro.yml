@@ -1,6 +1,7 @@
 ro:
   messages:
     save_issue: "Nu uitați să salvați tichete dvs.! Acest lucru asigură că orice atașamente pe care le-ați adăugat sunt salvate corect."
+    save_notes_first: "Sunteți sigur că doriți să trimiteți tichete? Nota dvs. nu a fost încă salvată! Apăsați 'Anulează' pentru a vă întoarce și a salva nota."
   labels:
     enable_table_paste: "Activați Lipirea Tabelelor"
     enable_image_paste: "Activați Lipirea Imaginilor"

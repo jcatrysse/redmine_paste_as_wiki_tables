@@ -1,6 +1,7 @@
 es:
   messages:
     save_issue: "¡Recuerda guardar tu petición! Esto asegura que todos los archivos adjuntos que hayas añadido se guarden correctamente."
+    save_notes_first: "¿Está seguro de que desea enviar el petición? ¡Tu nota aún no ha sido guardada! Presione 'Cancelar' para volver y guardar su nota."
   labels:
     enable_table_paste: "Habilitar Pegado de Tablas"
     enable_image_paste: "Habilitar Pegado de Imágenes"

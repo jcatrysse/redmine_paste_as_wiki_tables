@@ -10,3 +10,6 @@
 * Make table and clipboard option configurable in the plugin settings
 * Translations: en, fr, de, nl, ro, es
 * Some code optimizations
+
+### 0.0.3
+* Better handling when accidentally submitting the issue, when the note was not yet saved.

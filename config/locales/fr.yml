@@ -1,6 +1,7 @@
 fr:
   messages:
     save_issue: "N'oubliez pas de sauvegarder votre demande ! Cela garantit que toutes les pièces jointes que vous avez ajoutées sont correctement sauvegardées."
+    save_notes_first: "Êtes-vous sûr de vouloir soumettre le ticket? Votre note n'a pas encore été enregistrée! Appuyez sur 'Annuler' pour revenir et enregistrer votre note."
   labels:
     enable_table_paste: "Activer le collage de tableau"
     enable_image_paste: "Activer le collage d'image"
