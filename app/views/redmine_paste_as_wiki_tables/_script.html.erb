@@ -1,0 +1,157 @@
+<script type="text/javascript">
+    $(function() {
+        function insert(textarea, text) {
+            const $textarea = $(textarea).focus();
+            const currentText = $textarea.val();
+            const startPoint = $textarea.get(0).selectionStart;
+            const endPoint = startPoint + text.length;
+            $textarea.val(currentText.substring(0, startPoint) + text + currentText.substring(endPoint));
+            $textarea.get(0).setSelectionRange(endPoint, endPoint);
+        }
+
+        function isTable(text) {
+            const lines = $.trim(text).split(/\r?\n/);
+            if (lines.length < 2) {
+                return false;
+            }
+
+            const cellCount = lines[0].split('\t').length;
+            return cellCount > 1 && lines.every(line => line.split('\t').length === cellCount);
+        }
+
+        function toTable(text) {
+            const textFormatting = <%= raw('"' + Setting.text_formatting + '"') %>;
+            const lines = $.trim(text).split(/\r?\n/);
+
+            if (lines.length === 0) {
+                return text;
+            }
+
+            const firstLineCells = lines[0].split('\t');
+
+            if (textFormatting === "markdown" || textFormatting === "common_mark") {
+                const header = "| " + firstLineCells.join(" | ") + " |\n";
+                const separator = "|" + new Array(firstLineCells.length).fill("---").join("|") + "|\n";
+                const rows = lines.slice(1).map(line => "| " + line.split('\t').join(" | ") + " |\n").join('');
+                return header + separator + rows;
+            } else if (textFormatting === "textile") {
+                const header = "| " + firstLineCells.map(cell => "_." + cell).join(" | ") + " |\n";
+                const rows = lines.slice(1).map(line => "| " + line.split('\t').join(" | ") + " |\n").join('');
+                return header + rows;
+            } else {
+                return text;
+            }
+        }
+
+        function handleTextPaste(e, clipboardData) {
+            const text = clipboardData.getData('text');
+            const $this = $(e.target);
+
+            if (isTable(text)) {
+                insert($this, toTable(text));
+                e.preventDefault(); // To stop the default paste action.
+            }
+        }
+
+        function handleImagePaste(e, clipboardData) {
+            if (!(window.File && window.FileList && window.ProgressEvent && window.FormData)) {
+                return;
+            }
+
+            const $this = $(e.target);
+
+            if ($this.is('textarea[id^="journal_"]')) {
+                const items = clipboardData.items;
+                let file_upload = false;
+
+                $.event.addProp('dataTransfer');
+
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        file_upload = uploadImage(e, items[i]) || file_upload;
+                    }
+                }
+
+                if (file_upload) {
+                    handleFormSubmission($this);
+                }
+            }
+        }
+
+        function uploadImage(e, item) {
+            const blob = item.getAsFile();
+            const date = new Date();
+            const filename = constructFilename(date, blob);
+            const file = new Blob([blob], { type: blob.type });
+            file.name = filename;
+
+            const inputEl = $('input:file.filedrop').first();
+            handleFileDropEvent.target = e.target;
+            addFile(inputEl, file, true);
+
+            return true;
+        }
+
+        function constructFilename(date, blob) {
+            return 'clipboard-'
+              + date.getFullYear()
+              + ('0' + (date.getMonth() + 1)).slice(-2)
+              + ('0' + date.getDate()).slice(-2)
+              + ('0' + date.getHours()).slice(-2)
+              + ('0' + date.getMinutes()).slice(-2)
+              + '-' + randomKey(5).toLocaleLowerCase()
+              + '.' + blob.name.split('.').pop();
+        }
+
+        function handleFormSubmission($this) {
+            const enable_auto_submit = '<%= Setting.plugin_redmine_paste_as_wiki_tables['enable_auto_submit'] %>' === '1';
+            const notesForm = $this.closest('form');
+            const mainForm = $(document.getElementById('issue-form'));
+            $('#update').show();
+
+            setupFormSubmitHandlers(notesForm, mainForm, enable_auto_submit);
+        }
+
+        function setupFormSubmitHandlers(notesForm, mainForm, enable_auto_submit) {
+            notesForm.off('submit').on('submit', function () {
+                if (enable_auto_submit) {
+                    notesForm.remove();
+                    submitForm(mainForm);
+                } else {
+                    alert("<%= t('messages.save_issue').html_safe %>");
+                }
+            });
+
+            mainForm.off('submit').on('submit', function(e) {
+                if ($('#' + notesForm.attr('id')).length > 0) {
+                    if (!confirm("<%= t('messages.save_notes_first').html_safe %>")) {
+                        return false;
+                    } else {
+                        submitForm(mainForm);
+                    }
+                } else {
+                    submitForm(mainForm);
+                }
+            });
+        }
+
+        function submitForm(form) {
+            form.off('submit');
+            form.trigger("submit");
+        }
+
+        $(document).on('paste', '.wiki-edit', function (e) {
+            const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
+            if (!clipboardData) { return; }
+
+            const enableTablePaste = '<%= Setting.plugin_redmine_paste_as_wiki_tables['enable_table_paste'] %>' === '1';
+            const enableImagePaste = '<%= Setting.plugin_redmine_paste_as_wiki_tables['enable_image_paste'] %>' === '1';
+
+            if (clipboardData.types.some(t => /^text\/plain$/.test(t)) && enableTablePaste) {
+                handleTextPaste(e, clipboardData);
+            } else if (enableImagePaste) {
+                handleImagePaste(e, clipboardData);
+            }
+        });
+    });
+</script>
