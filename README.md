@@ -16,6 +16,7 @@ Many thanks to the original authors `suer` and `knt419` for the excellent work.
 Type below commands:
 * $ cd $RAILS_ROOT/plugins
 * $ git clone https://github.com/jcatrysse/redmine_paste_as_wiki_tables.git
+* $ `bundle exec rake redmine:plugins:migrate NAME=redmine_paste_as_wiki_tables RAILS_ENV=production`
 
 Clipboard options can be modified in the Plugin Settings
 
