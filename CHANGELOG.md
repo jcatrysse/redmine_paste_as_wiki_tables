@@ -1,4 +1,7 @@
 # CHANGELOG
+## 0.1.1
+* Add preview for pasted clipboard images
+
 ## 0.1.0
 * Optimize code structure (hooks)
 * Refactoring of the javascript

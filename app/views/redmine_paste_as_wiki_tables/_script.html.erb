@@ -74,6 +74,7 @@
 
                 if (file_upload) {
                     handleFormSubmission($this);
+                    startTokenObservation($this);
                 }
             }
         }
@@ -105,32 +106,69 @@
 
         function handleFormSubmission($this) {
             const enable_auto_submit = '<%= Setting.plugin_redmine_paste_as_wiki_tables['enable_auto_submit'] %>' === '1';
-            const notesForm = $this.closest('form');
-            const mainForm = $(document.getElementById('issue-form'));
+            const $notesForm = $this.closest('form');
+            const $mainForm = $(document.getElementById('issue-form'));
             $('#update').show();
 
-            setupFormSubmitHandlers(notesForm, mainForm, enable_auto_submit);
+            setupFormSubmitHandlers($notesForm, $mainForm, enable_auto_submit);
         }
 
-        function setupFormSubmitHandlers(notesForm, mainForm, enable_auto_submit) {
-            notesForm.off('submit').on('submit', function () {
+        function handlePreview($this) {
+            const $notesForm = $this.closest('form');
+            const $mainForm = $(document.getElementById('issue-form'));
+
+            if ($notesForm.find('.attachments_fields').length === 0) {
+                $notesForm.append($('<div class="attachments_fields"></div>'));
+            }
+
+            $notesForm.find('.attachments_fields input').remove();
+
+            $mainForm.find('.attachments_fields input').each(function() {
+                const $input = $(this);
+                $notesForm.find('.attachments_fields').append($('<input>', {
+                    type: 'hidden',
+                    name: $input.attr('name'),
+                    value: $input.val()
+                }));
+            });
+        }
+
+        function startTokenObservation($this) {
+            const $mainForm = $(document.getElementById('issue-form'));
+            const $lastToken = $mainForm.find('.attachments_fields input.token').last();
+            const config = { attributes: true, attributeFilter: ['value'], childList: false, subtree: true };
+
+            const observer = new MutationObserver(mutations => {
+                if ($lastToken.val() !== "") {
+                    handlePreview($this);
+                    observer.disconnect();
+                }
+            });
+
+            if ($lastToken.length) {
+                observer.observe($lastToken[0], config);
+            }
+        }
+
+        function setupFormSubmitHandlers($notesForm, $mainForm, enable_auto_submit) {
+            $notesForm.off('submit').on('submit', function () {
                 if (enable_auto_submit) {
-                    notesForm.remove();
-                    submitForm(mainForm);
+                    $notesForm.remove();
+                    submitForm($mainForm);
                 } else {
                     alert("<%= t('messages.save_issue').html_safe %>");
                 }
             });
 
-            mainForm.off('submit').on('submit', function(e) {
-                if ($('#' + notesForm.attr('id')).length > 0) {
+            $mainForm.off('submit').on('submit', function(e) {
+                if ($('#' + $notesForm.attr('id')).length > 0) {
                     if (!confirm("<%= t('messages.save_notes_first').html_safe %>")) {
                         return false;
                     } else {
-                        submitForm(mainForm);
+                        submitForm($mainForm);
                     }
                 } else {
-                    submitForm(mainForm);
+                    submitForm($mainForm);
                 }
             });
         }
