@@ -67,7 +67,7 @@ OpenAI review (gpt-5): `docs/reviews/openai-2026-10-06-ce975b0.md`, no findings.
 ### Work list verdicts
 
 1. Drop the plugin? **Kept** (see Open questions): dropping loses image paste on note edit and the TSV paste.
-2. `enable_table_paste`: left on. With `ee171d9` the plugin no longer double-pastes next to core; it only acts on tab separated plain text, which core ignores. Switch it off in the settings if that is not wanted.
+2. `enable_table_paste`: Jan decided to switch it off on Redmine 7 (see Decided by Jan). Until then: With `ee171d9` the plugin no longer double-pastes next to core; it only acts on tab separated plain text, which core ignores. Switch it off in the settings if that is not wanted.
 3. Real clipboard test with Excel/LibreOffice: **not possible here**, synthetic `ClipboardEvent` only (list for Jan).
 4. Default settings booleans vs `'1'`: **fixed** (`4f1b121`, test `ScriptTest`).
 5. Tests PostgreSQL and MariaDB: done (numbers above). 6. Webhooks: nothing to do, the plugin does not change issue data or any API output. 7. Hand check on a running Redmine 7: done (e2e below).
@@ -103,14 +103,16 @@ No permissions, routes, macros, mail, API, rake tasks or cron in this plugin. Lo
 MariaDB set of the same scenarios: `docs/e2e/mariadb/`.
 
 ### Found, not fixed (outside the minimal scope)
-- `$.trim` in `isTable` strips a leading tab, so a copied range whose first cell is empty is not recognised as a table.
 - With auto submit off, the note is saved with a reference to an attachment that is only saved when the issue is saved (broken image until then; the alert says so).
 - `.codex/test_setup.sh` breaks as root (`$SUDO -u postgres` with empty `$SUDO`); I created the role by hand.
 - Text pasted into a `.wiki-edit` that has no Stimulus table-paste (never the case in core 7) is handled by the plugin only.
 
-### Open questions for Jan
-1. **Keep or drop the plugin?** Options: drop (core covers HTML tables), keep (image paste on note edit, TSV text). I kept it: dropping loses behaviour users rely on. If nobody uses image paste on note edit, drop it and uninstall on 5.1 first.
-2. Leave `enable_table_paste` on (my choice, harmless now) or switch off after the upgrade.
+### Decided by Jan (2026-10-06, after the session)
+1. The plugin stays (image paste on note edit is needed).
+2. On Redmine 7 `enable_table_paste` is switched off (Administration > Plugins > Configure, uncheck "Enable Table Paste", Apply). The setting is stored, so changing the default in `init.rb` would not reach an installation that saved it; it is an admin action.
+3. The leading tab fix is done: `trimLineBreaks` instead of `$.trim` (e2e `table-paste-empty-first-cell`). PostgreSQL and MariaDB: 8 runs / 0 failures, e2e 40 screenshots / 0 problems each.
+
+Core table paste versus the plugin's: core is better for everything a spreadsheet produces (HTML table on the clipboard: escapes `|`, turns line breaks in a cell into `<br>`, pads uneven rows, undo works). The plugin only adds plain tab separated text without HTML (editors, terminals), which core ignores. Excel, LibreOffice and Google Sheets always put HTML on the clipboard, so with the plugin's table paste off nothing is lost for them.
 
 ### Still to do by a person
 - Real clipboard test with Excel/LibreOffice in the GEOxyz browsers.

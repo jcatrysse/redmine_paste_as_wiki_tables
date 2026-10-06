@@ -17,8 +17,13 @@
             field.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
+        // only line breaks: a leading tab is an empty first cell
+        function trimLineBreaks(text) {
+            return text.replace(/^[\r\n]+|[\r\n]+$/g, '');
+        }
+
         function isTable(text) {
-            const lines = $.trim(text).split(/\r?\n/);
+            const lines = trimLineBreaks(text).split(/\r?\n/);
             if (lines.length < 2) {
                 return false;
             }
@@ -28,7 +33,7 @@
         }
 
         function toTable(text) {
-            const lines = $.trim(text).split(/\r?\n/);
+            const lines = trimLineBreaks(text).split(/\r?\n/);
 
             if (lines.length === 0) {
                 return text;

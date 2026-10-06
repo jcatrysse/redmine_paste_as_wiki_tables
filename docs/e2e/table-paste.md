@@ -1,11 +1,12 @@
 # table-paste
 
-Run 2026-10-06T19:57:00.822Z against http://127.0.0.1:3000.
+Run 2026-10-06T20:33:25.763Z against http://127.0.0.1:3000.
 
 | screenshot | user | URL | shows |
 |---|---|---|---|
 | ![](table-paste-tsv-markdown.png) | manager | `/projects/e2e-project/issues/new` | Tab separated text becomes a CommonMark table; the pipe in a cell is escaped |
 | ![](table-paste-tsv-cursor.png) | manager | `/projects/e2e-project/issues/new` | Pasting in the middle keeps the text after the cursor |
+| ![](table-paste-empty-first-cell.png) | manager | `/projects/e2e-project/issues/new` | A range that starts with an empty cell is still recognised as a table |
 | ![](table-paste-plain-text.png) | manager | `/projects/e2e-project/issues/new` | Plain text and uneven rows are not touched by the plugin |
 | ![](table-paste-html-table-once.png) | manager | `/projects/e2e-project/issues/new` | A spreadsheet paste (HTML plus text) gives one table, not two |
 | ![](table-paste-preview.png) | manager | `/projects/e2e-project/issues/new` | The preview renders the pasted text as a table |

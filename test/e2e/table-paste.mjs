@@ -34,6 +34,13 @@ await t.page.evaluate(() => { const e = document.querySelector('#issue_descripti
 await paste(t.page, '#issue_description', { 'text/plain': 'a\tb\nc\td' });
 expect('replaces selection', await value(), 'xx| a | b |\n|---|---|\n| c | d |\nyy');
 
+// an empty first cell (a copied range that starts with an empty cell) is a leading tab
+await t.page.fill('#issue_description', '');
+prevented = await paste(t.page, '#issue_description', { 'text/plain': '\tB\tC\n1\t2\t3\n' });
+expect('empty first cell prevented', prevented, true);
+expect('empty first cell', await value(), '|  | B | C |\n|---|---|---|\n| 1 | 2 | 3 |\n');
+await t.shot('empty-first-cell', 'A range that starts with an empty cell is still recognised as a table', { full: false });
+
 // plain text is left alone (default paste, nothing prevented)
 await t.page.fill('#issue_description', '');
 prevented = await paste(t.page, '#issue_description', { 'text/plain': 'just a sentence' });
