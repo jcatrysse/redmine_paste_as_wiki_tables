@@ -23,7 +23,7 @@ what is left. Written 2026-10-06 from a measured analysis (report at the bottom)
 | After sync | n.v.t. |
 | Complexity (1 trivial .. 5 rewrite) | 1 |
 | Measured on | Redmine 7.0.1 (7.0-stable-GEOxyz + latest 7.0-stable), Rails 8.1.3.1, Ruby 3.3.6, PostgreSQL 16 and MariaDB 10.11 |
-| Branch head when this file was written | `6857c12` |
+| Branch head when this file was written | `6092a54` |
 
 ## Already on this branch
 
@@ -37,7 +37,7 @@ In this order: things that break, security, the GEOxyz changes, the open items, 
 
 1. Decide: drop the plugin (core 7.0 pastes tables) unless image paste while editing a note is used.
 
-**Open items from the analysis** (Dutch; where they repeat a priority item, the priority item wins)
+**Open items from the analysis** (Dutch; where they conflict with a decision or a priority item above, those win)
 
 2. After upgrade switch enable_table_paste off (core covers it) or keep with fix ee171d9; drop the plugin entirely if image paste on note edit is not used
 3. Real clipboard test with Excel/LibreOffice in GEOxyz's browsers (here a synthetic ClipboardEvent in Chromium)
@@ -186,7 +186,9 @@ results quoted in the analysis come from it.
 - **5.1 compatibility**: prefer fixes that also run on Redmine 5.1 so they can be merged early;
   say so when a fix cannot.
 - **Git**: work on `redmine70-migration` only; never push to the default branch; never force-push
-  a branch someone else uses. Descriptive commit messages (what and why).
+  a branch someone else uses. Descriptive commit messages (what and why). Push after every
+  commit, together with the updated status in this file: a cloud session can stop at a usage
+  limit, and work that is not pushed is lost with its container.
 - **GitHub Actions**: manual only (`workflow_dispatch`). Do not add push, pull_request or schedule
   triggers.
 
