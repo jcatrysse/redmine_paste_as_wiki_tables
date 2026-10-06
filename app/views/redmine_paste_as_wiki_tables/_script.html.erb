@@ -179,6 +179,7 @@
         }
 
         $(document).on('paste', '.wiki-edit', function (e) {
+            if (e.isDefaultPrevented()) { return; } // already handled, e.g. by Redmine's own table paste
             const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
             if (!clipboardData) { return; }
 
