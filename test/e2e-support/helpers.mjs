@@ -46,5 +46,5 @@ export async function paste(page, selector, data) {
   }, { selector, data });
 }
 
-// 1x1 transparent PNG
-export const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+// 160x60 PNG, upper half red and lower half blue, so it is visible in a screenshot
+export const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAIAAABuCSZCAAAAqUlEQVR4nO3RAQkAMQzAwCqpsFc8WVMxHsLBCQhkzi5h83sBTxkcZ3CcwXEGxxkcZ3CcwXEGxxkcZ3CcwXEGxxkcZ3CcwXEGxxkcZ3CcwXEGxxkcZ3CcwXEGxxkcZ3CcwXEGx81+hzCD4wyOMzjO4DiD4wyOMzjO4DiD4wyOMzjO4DiD4wyOMzjO4DiD4wyOMzjO4DiD4wyOMzjO4DiD4wyOMzjO4DiD4y4jUH13obw0SQAAAABJRU5ErkJggg==';
