@@ -18,7 +18,7 @@ what is left. Written 2026-10-06 from a measured analysis (report at the bottom)
 | Plugin id | `redmine_paste_as_wiki_tables` |
 | GEOxyz runs today | `master` |
 | Upstream | knt419/redmine_paste_as_wiki_tables master @ 88ed96688329d569279744338a67ae7dde36142c (2018-04-29) |
-| Runs on Redmine 7 as is | DEELS |
+| Runs on Redmine 7 as is | DEELS (now: yes, after the fixes below) |
 | Upstream sync | UPSTREAM DOOD: nothing; fork contains all upstream commits + 13 own |
 | After sync | n.v.t. |
 | Complexity (1 trivial .. 5 rewrite) | 1 |
@@ -49,6 +49,72 @@ In this order: things that break, security, the GEOxyz changes, the open items, 
 6. Check Redmine 7 webhooks against this plugin (see "Rules"), and note the result here even if nothing is needed.
 7. Verify every feature of the plugin by hand on a running Redmine 7 (screenshots).
 
+## Result of the migration session (2026-10-06)
+
+**Baseline** (before any change, Redmine 7.0-stable-GEOxyz, PostgreSQL 16): the plugin had no tests;
+smoke 11 screenshots / 0 problems, core flows 6 / 0.
+
+**After** (commits `ee171d9`, `4f1b121`, and the e2e commit):
+
+| | PostgreSQL 16 | MariaDB 10.11 |
+|---|---|---|
+| plugin tests (minitest) | 8 runs, 68 assertions, 0 failures | 8 runs, 68 assertions, 0 failures |
+| e2e (production mode) | smoke 11/0, core 6/0, image-paste 8/0, settings 5/0, table-paste 9/0 (screenshot count / problems) | same: 39 screenshots, 0 problems (`docs/e2e/mariadb`) |
+
+There are no migrations. Not run: Redmine 5.1 (not required, the fixes use nothing 6/7 specific; unverified there).
+OpenAI review (gpt-5): `docs/reviews/openai-2026-10-06-ce975b0.md`, no findings. Own adversarial review: see "Found, not fixed".
+
+### Work list verdicts
+
+1. Drop the plugin? **Kept** (see Open questions): dropping loses image paste on note edit and the TSV paste.
+2. `enable_table_paste`: left on. With `ee171d9` the plugin no longer double-pastes next to core; it only acts on tab separated plain text, which core ignores. Switch it off in the settings if that is not wanted.
+3. Real clipboard test with Excel/LibreOffice: **not possible here**, synthetic `ClipboardEvent` only (list for Jan).
+4. Default settings booleans vs `'1'`: **fixed** (`4f1b121`, test `ScriptTest`).
+5. Tests PostgreSQL and MariaDB: done (numbers above). 6. Webhooks: nothing to do, the plugin does not change issue data or any API output. 7. Hand check on a running Redmine 7: done (e2e below).
+
+### Fixes in `4f1b121`
+- Flags `enable_*` computed server side for both booleans (defaults) and `'1'/'0'` (saved); before, a fresh install did nothing.
+- Settings form posts `0` for unchecked boxes (hidden fields) and shows defaults correctly.
+- Messages and text formatting emitted with `json_escape(...to_json)` instead of `html_safe` inside JS strings.
+- Table paste: `|` in cells escaped (`\|` markdown, `&#124;` textile), text after the selection no longer overwritten, an `input` event fires, selection is replaced.
+- Paste with `text/plain` that is not a table now falls through to image paste.
+
+### GEOxyz commits: verdicts
+All kept; their function is in the inventory with a scenario. `8c4be6c` (settings default fix) was incomplete and is completed by `4f1b121`. `7e4a161` (preview on note edit, `handlePreview`) works: covered by the image-paste scenario (tokens copied into the note form). LICENSE, README, typo, version commits: nothing to review.
+
+### Inventory of functions
+
+| function | how a user reaches it | scenario | screenshots (`docs/e2e/`) |
+|---|---|---|---|
+| Paste TSV text as table (markdown/CommonMark) | paste in any `.wiki-edit` textarea | `table-paste.mjs` | `table-paste-tsv-markdown`, `-tsv-cursor`, `-preview`, `-plain-text` |
+| Paste TSV as table (textile) | same, text formatting textile | `table-paste.mjs` | `table-paste-tsv-textile` |
+| No double table next to core's HTML table paste | paste HTML+TSV from a spreadsheet | `table-paste.mjs` | `table-paste-html-table-once` |
+| Table paste off | setting | `table-paste.mjs` | `table-paste-setting-off` |
+| Table paste as reporter / outsider | roles | `table-paste.mjs` | `table-paste-reporter`, `-outsider-private` |
+| Paste image while editing a note, upload, markup, preview tokens | edit note, paste | `image-paste.mjs` | `image-paste-pasted`, `-saved` |
+| Auto submit of the issue form | save note after paste | `image-paste.mjs` | `image-paste-saved` |
+| Auto submit off: reminder alert | setting | `image-paste.mjs` | `image-paste-auto-submit-off` |
+| Image paste off | setting | `image-paste.mjs` | `image-paste-image-paste-off` |
+| Image with non-table text | paste | `image-paste.mjs` | `image-paste-image-with-text` |
+| No editor for reporter / outsider / anonymous | roles | `image-paste.mjs` | `image-paste-reporter`, `-outsider-private`, `-anonymous` |
+| Settings page | Administration > Plugins > Configure | `settings.mjs` | `settings-all-on`, `-all-off`, `-image-only`, `-manager-refused`, `-anonymous` |
+
+No permissions, routes, macros, mail, API, rake tasks or cron in this plugin. Locales en, de, es, fr, nl, ro: same keys (`test/unit/locales_test.rb`).
+MariaDB set of the same scenarios: `docs/e2e/mariadb/`.
+
+### Found, not fixed (outside the minimal scope)
+- `$.trim` in `isTable` strips a leading tab, so a copied range whose first cell is empty is not recognised as a table.
+- With auto submit off, the note is saved with a reference to an attachment that is only saved when the issue is saved (broken image until then; the alert says so).
+- `.codex/test_setup.sh` breaks as root (`$SUDO -u postgres` with empty `$SUDO`); I created the role by hand.
+- Text pasted into a `.wiki-edit` that has no Stimulus table-paste (never the case in core 7) is handled by the plugin only.
+
+### Open questions for Jan
+1. **Keep or drop the plugin?** Options: drop (core covers HTML tables), keep (image paste on note edit, TSV text). I kept it: dropping loses behaviour users rely on. If nobody uses image paste on note edit, drop it and uninstall on 5.1 first.
+2. Leave `enable_table_paste` on (my choice, harmless now) or switch off after the upgrade.
+
+### Still to do by a person
+- Real clipboard test with Excel/LibreOffice in the GEOxyz browsers.
+
 ## GEOxyz changes to review or re-apply
 
 These GEOxyz commits are on the branch GEOxyz runs today and therefore on this branch. Review each one against the code it now sits on (upstream merges and Redmine 7 core): drop it if upstream or core now does the same, rewrite it if it is not up to the quality rules below (tests, I18n, security, portability), keep it otherwise. Record the verdict per commit in this file.
@@ -72,7 +138,7 @@ These GEOxyz commits are on the branch GEOxyz runs today and therefore on this b
 
 Actions the person doing the upgrade must take, or know about, for this plugin:
 
-- If dropped: uninstall on 5.1 before the upgrade (`rake redmine:plugins:migrate NAME=redmine_paste_as_wiki_tables VERSION=0`, then remove). If kept: switch enable_table_paste off.
+- Kept (see Open questions): nothing is required, no migrations. Open Administration > Plugins > Configure once to check the options. If you decide to drop it: uninstall on 5.1 before the upgrade (`rake redmine:plugins:migrate NAME=redmine_paste_as_wiki_tables VERSION=0`, then remove).
 
 ## How to test
 
