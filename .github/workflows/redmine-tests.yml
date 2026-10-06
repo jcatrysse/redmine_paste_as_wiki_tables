@@ -1,0 +1,65 @@
+name: Redmine tests (manual)
+
+# Runs ONLY when started by hand: Actions tab -> "Redmine tests (manual)" -> Run
+# workflow, or `gh workflow run redmine-tests.yml -f redmine=7.0-stable-GEOxyz -f db=mariadb`.
+# There is deliberately no push, pull_request or schedule trigger.
+on:
+  workflow_dispatch:
+    inputs:
+      redmine:
+        description: Redmine branch (-GEOxyz comes from jcatrysse/redmine)
+        type: choice
+        options: [7.0-stable-GEOxyz, 7.0-stable, 6.1-stable, 5.1-stable]
+        default: 7.0-stable-GEOxyz
+      db:
+        description: Database engine
+        type: choice
+        options: [postgresql, mariadb, mysql]
+        default: postgresql
+      extra_plugins:
+        description: 'Plugins this one needs, "<git url>@<branch>" separated by spaces'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ inputs.redmine }} / ${{ inputs.db }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      CI: 'true'
+      RMP_DB: ${{ inputs.db }}
+      RMP_PROVISION_DB: '0'
+      RMP_EXTRA_PLUGINS: ${{ inputs.extra_plugins }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick Ruby for this Redmine
+        id: ruby
+        run: |
+          case "${{ inputs.redmine }}" in
+            5.1-stable) echo "version=3.2" >> "$GITHUB_OUTPUT" ;;
+            *)          echo "version=3.3" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.ruby.outputs.version }}
+
+      - name: System libraries
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libpq-dev default-libmysqlclient-dev
+
+      - name: Start ${{ inputs.db }}
+        run: ./.codex/start_database.sh "${{ inputs.db }}"
+
+      - name: Clone Redmine and install the plugin
+        run: ./.codex/redmine_clone.sh "${{ inputs.redmine }}"
+
+      - name: Bundle and migrate
+        run: ./.codex/test_setup.sh
+
+      - name: Plugin tests
+        run: ./.codex/test_plugin.sh
