@@ -20,6 +20,10 @@ on:
         description: 'Plugins this one needs, "<git url>@<branch>" separated by spaces'
         required: false
         default: ''
+      e2e:
+        description: 'Also start a real Redmine and run the browser checks (screenshots as artifact)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -28,7 +32,7 @@ jobs:
   test:
     name: ${{ inputs.redmine }} / ${{ inputs.db }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       CI: 'true'
       RMP_DB: ${{ inputs.db }}
@@ -63,3 +67,25 @@ jobs:
 
       - name: Plugin tests
         run: ./.codex/test_plugin.sh
+
+      - uses: actions/setup-node@v4
+        if: ${{ inputs.e2e }}
+        with:
+          node-version: 22
+
+      - name: Playwright with Chromium
+        if: ${{ inputs.e2e }}
+        run: npm install -g playwright && npx playwright install --with-deps chromium
+
+      - name: Real Redmine and browser checks
+        if: ${{ inputs.e2e }}
+        run: ./.codex/start_server.sh && ./.codex/e2e.sh
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.e2e && always() }}
+        with:
+          name: e2e-${{ inputs.redmine }}-${{ inputs.db }}
+          path: |
+            docs/e2e/
+            redmine/log/*.log
+          if-no-files-found: ignore
