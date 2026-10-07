@@ -17,9 +17,9 @@
             field.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
-        // only line breaks: a leading tab is an empty first cell
+        // only blank lines (line breaks and spaces) at both ends: a leading tab is an empty first cell
         function trimLineBreaks(text) {
-            return text.replace(/^[\r\n]+|[\r\n]+$/g, '');
+            return text.replace(/^(?: *\r?\n)+|(?:\r?\n *)+$/g, '');
         }
 
         function isTable(text) {

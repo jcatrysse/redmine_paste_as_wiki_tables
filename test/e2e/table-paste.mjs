@@ -41,6 +41,13 @@ expect('empty first cell prevented', prevented, true);
 expect('empty first cell', await value(), '|  | B | C |\n|---|---|---|\n| 1 | 2 | 3 |\n');
 await t.shot('empty-first-cell', 'A range that starts with an empty cell is still recognised as a table', { full: false });
 
+// blank lines (spaces only) around the pasted text do not break the table
+for (const text of ['A\tB\n1\t2\n   ', '   \nA\tB\n1\t2']) {
+  await t.page.fill('#issue_description', '');
+  prevented = await paste(t.page, '#issue_description', { 'text/plain': text });
+  expect(`blank edge lines ${JSON.stringify(text)}`, await value(), '| A | B |\n|---|---|\n| 1 | 2 |\n');
+}
+
 // plain text is left alone (default paste, nothing prevented)
 await t.page.fill('#issue_description', '');
 prevented = await paste(t.page, '#issue_description', { 'text/plain': 'just a sentence' });
