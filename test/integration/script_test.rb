@@ -8,6 +8,11 @@ class ScriptTest < Redmine::IntegrationTest
   def setup
     Setting.plugin_redmine_paste_as_wiki_tables = {}
     Setting.clear_cache
+    # redmine_view_issue_description (when installed next to this plugin) hides the issue page
+    # from roles without its permission
+    if Redmine::AccessControl.permission(:view_issue_description)
+      Role.find(1).add_permission!(:view_issue_description)
+    end
   end
 
   def teardown

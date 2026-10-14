@@ -102,6 +102,10 @@ All kept; their function is in the inventory with a scenario. `8c4be6c` (setting
 No permissions, routes, macros, mail, API, rake tasks or cron in this plugin. Locales en, de, es, fr, nl, ro: same keys (`test/unit/locales_test.rb`).
 MariaDB set of the same scenarios: `docs/e2e/mariadb/`.
 
+### Combined run of 2026-10-14 (coordinator, 44 GEOxyz plugins)
+- `ScriptTest#..._never_saved` returned 403 with `redmine_view_issue_description` installed (intended behaviour of that plugin, it hides the issue page without its permission). Fixed in the test setup: role 1 gets `view_issue_description` when that permission exists. Not verifiable here without that plugin; plugin tests without it: 8 runs / 0 failures.
+- Harness finding H6 (shared `.codex` kit, not changed in this repo to keep the kit identical everywhere): `start_server.sh` writes `config/configuration.yml` with `email_delivery` under `default:`, which Redmine also applies to the test environment; it should be written for `$RMP_SERVER_ENV`. Owner: the kit.
+
 ### Found, not fixed (outside the minimal scope)
 - With auto submit off, the note is saved with a reference to an attachment that is only saved when the issue is saved (broken image until then; the alert says so).
 - `.codex/test_setup.sh` breaks as root (`$SUDO -u postgres` with empty `$SUDO`); I created the role by hand.
