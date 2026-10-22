@@ -1,4 +1,7 @@
 # CHANGELOG
+## Unreleased
+* Fixed: with Textile the header row of a pasted table was written as `| _.Name |` and shown as the text "_.Name"; it is now `|_. Name |`, a header cell.
+
 ## 0.1.1
 * Add preview for pasted clipboard images
 

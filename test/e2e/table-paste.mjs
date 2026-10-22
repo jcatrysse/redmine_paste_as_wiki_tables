@@ -79,8 +79,17 @@ await t.login('manager');
 await t.go(NEW);
 await t.page.fill('#issue_description', '');
 await paste(t.page, '#issue_description', { 'text/plain': TSV });
-expect('tsv textile', await value(), '| _.Name | _.Value |\n| alpha | a&#124;b |\n| beta | 2 |\n');
-await t.shot('tsv-textile', 'With textile formatting the header cells use _. and the pipe becomes &#124;');
+expect('tsv textile', await value(), '|_. Name |_. Value |\n| alpha | a&#124;b |\n| beta | 2 |\n');
+await t.shot('tsv-textile', 'With textile formatting each header cell starts with "_. " right after its pipe; a pipe inside a cell becomes &#124;');
+// Redmine's Textile renders the first row as header cells, not as the literal text "_.Name"
+await t.page.click('#issue_description >> xpath=ancestor::div[contains(@class,"jstBlock")]//a[contains(@class,"tab-preview")]');
+await t.settle();
+await t.page.waitForSelector('#preview_issue_description table');
+const textileHeaders = await t.page.$$eval('#preview_issue_description table th', ths => ths.map(th => th.textContent.trim()));
+expect('textile preview header cells', JSON.stringify(textileHeaders), JSON.stringify(['Name', 'Value']));
+const textileCells = await t.page.$$eval('#preview_issue_description table td', tds => tds.map(td => td.textContent.trim()));
+expect('textile preview body cells', JSON.stringify(textileCells), JSON.stringify(['alpha', 'a|b', 'beta', '2']));
+await t.shot('textile-preview', 'The Textile preview shows Name and Value as header cells, and the cell with a pipe intact');
 await setTextFormatting(t, 'common_mark');
 
 // the table paste can be switched off

@@ -28,6 +28,7 @@ what is left. Written 2026-10-06 from a measured analysis (report at the bottom)
 ## Already on this branch
 
 - `ee171d9` Skip pastes that Redmine 7 already turned into a table
+- 2026-10-22, finding #25088: with Textile a pasted header became `| _.Name |`, which Redmine renders as a cell with the literal text `_.Name`. Now `|_. Name |` (the `_.` right after the pipe, then a space), a header cell. e2e `table-paste` (7.0-stable-GEOxyz 578730a, PostgreSQL 16.15, production mode): on the old code 3 problems (the text, no `<th>` in the preview, cells `_.Name`/`_.Value`); after: smoke 11/0, core 6/0, image-paste 8/0, settings 5/0, table-paste 11/0 (screenshots/problems); `table-paste-tsv-textile.png` and the new `table-paste-textile-preview.png` looked at and committed. minitest 8 runs, 68 assertions, 0 failures before and after (the conversion is client-side; the e2e step is its test).
 
 ## Work list for the migration session
 

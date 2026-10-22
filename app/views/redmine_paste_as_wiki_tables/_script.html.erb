@@ -51,7 +51,8 @@
                 return header + separator + rows;
             } else if (textFormatting === "textile") {
                 const escape = cell => cell.replace(/\|/g, '&#124;');
-                const header = "| " + firstLineCells.map(cell => "_." + escape(cell)).join(" | ") + " |\n";
+                // a header cell is "|_. Name ": the _. right after the pipe, then a space
+                const header = firstLineCells.map(cell => "|_. " + escape(cell) + " ").join('') + "|\n";
                 const rows = lines.slice(1).map(line => "| " + cells(line).map(escape).join(" | ") + " |\n").join('');
                 return header + rows;
             } else {
