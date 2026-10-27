@@ -36,6 +36,7 @@ jobs:
     env:
       CI: 'true'
       RMP_DB: ${{ inputs.db }}
+      REDMINE_BRANCH: ${{ inputs.redmine }}
       RMP_PROVISION_DB: '0'
       RMP_EXTRA_PLUGINS: ${{ inputs.extra_plugins }}
     steps:
@@ -44,7 +45,7 @@ jobs:
       - name: Pick Ruby for this Redmine
         id: ruby
         run: |
-          case "${{ inputs.redmine }}" in
+          case "$REDMINE_BRANCH" in
             5.1-stable) echo "version=3.2" >> "$GITHUB_OUTPUT" ;;
             *)          echo "version=3.3" >> "$GITHUB_OUTPUT" ;;
           esac
@@ -57,10 +58,10 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install -y -qq libpq-dev default-libmysqlclient-dev
 
       - name: Start ${{ inputs.db }}
-        run: ./.codex/start_database.sh "${{ inputs.db }}"
+        run: ./.codex/start_database.sh "$RMP_DB"
 
       - name: Clone Redmine and install the plugin
-        run: ./.codex/redmine_clone.sh "${{ inputs.redmine }}"
+        run: ./.codex/redmine_clone.sh "$REDMINE_BRANCH"
 
       - name: Bundle and migrate
         run: ./.codex/test_setup.sh
