@@ -47,6 +47,7 @@ jobs:
         run: |
           case "$REDMINE_BRANCH" in
             5.1-stable) echo "version=3.2" >> "$GITHUB_OUTPUT" ;;
+            7.0-stable*) echo "version=4.0" >> "$GITHUB_OUTPUT" ;;
             *)          echo "version=3.3" >> "$GITHUB_OUTPUT" ;;
           esac
 
